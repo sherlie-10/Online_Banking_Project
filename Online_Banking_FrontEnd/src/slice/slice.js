@@ -11,18 +11,18 @@ const slice = createSlice({
 
     extraReducers : (builder)=>{
         builder.addCase(apiCall.pending, (state,action)=>{
-            state.isLoding = false;
+            state.isLoading  = false;
             state.result = {};
             state.error = false
         })
         builder.addCase(apiCall.fulfilled,(state,action)=>{
-            state.isLoding = true;
-            state.result = action.payload;
+            state.isLoading = true;
+            state.result = action.payload;   //Save the jwt token here
             state.error = false
         })
 
         builder.addCase(apiCall.rejected,(state,action)=>{
-            state.isLoding = true;
+            state.isLoading = false;
             state.result = {};
             state.error = true
         })
