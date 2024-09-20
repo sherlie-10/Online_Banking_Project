@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import './userRegistration.css';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+
+
 
 const UserRegistration = () => {
   const [formData, setFormData] = useState({
-    username: '',
     password: '',
     email: '',
     firstName: '',
@@ -19,54 +24,40 @@ const UserRegistration = () => {
     address: '',
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate(); 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form data submitted:', formData);
+
+    try {
+      const response = await axios.post('http://localhost:9090/api/register', formData);
+
+      // Assuming backend returns a success message or user ID
+      console.log('Response:', response.data);
+      alert('Registration successful! Your customer ID has been sent to your email.');
+
+      // Redirect to login after successful registration
+      navigate('/login');
+    } catch (error) {
+      console.error('There was an error during registration:', error.response || error.message);
+      alert('Registration failed. Please check the information and try again.');
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword); // Toggle password visibility
   };
 
   return (
     <div className="registration-container">
       <form className="registration-form" onSubmit={handleSubmit}>
-        <h2>User Registration</h2>
-
-        <div className="input-group">
-          <label>Username</label>
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            placeholder="Enter your username"
-          />
-        </div>
-
-        <div className="input-group">
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Enter your password"
-          />
-        </div>
-
-        <div className="input-group">
-          <label>Email Address</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Enter your email address"
-          />
-        </div>
+        <center><h2 style={{ fontWeight: 'bold' }}>Register</h2></center>
 
         <div className="input-group side-by-side">
           <div className="input-group half-width">
@@ -77,6 +68,7 @@ const UserRegistration = () => {
               value={formData.firstName}
               onChange={handleChange}
               placeholder="Enter your first name"
+              required
             />
           </div>
 
@@ -88,8 +80,42 @@ const UserRegistration = () => {
               value={formData.lastName}
               onChange={handleChange}
               placeholder="Enter your last name"
+              required
             />
           </div>
+        </div>
+
+        <div className="input-group">
+          <label>Password</label>
+          <div className="password-container">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Enter your password"
+              required
+            />
+            <button
+              type="button"
+              className="password-toggle"
+              onClick={togglePasswordVisibility}
+            >
+              <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+            </button>
+          </div>
+        </div>
+
+        <div className="input-group">
+          <label>Email Address</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Enter your email address"
+            required
+          />
         </div>
 
         <div className="input-group side-by-side">
@@ -101,6 +127,7 @@ const UserRegistration = () => {
               value={formData.mobileNumber}
               onChange={handleChange}
               placeholder="Enter your mobile number"
+              required
             />
           </div>
 
@@ -112,6 +139,7 @@ const UserRegistration = () => {
               value={formData.aadharNumber}
               onChange={handleChange}
               placeholder="Enter your Aadhar number"
+              required
             />
           </div>
         </div>
@@ -125,6 +153,7 @@ const UserRegistration = () => {
               value={formData.panNumber}
               onChange={handleChange}
               placeholder="Enter your PAN number"
+              required
             />
           </div>
 
@@ -134,6 +163,7 @@ const UserRegistration = () => {
               name="gender"
               value={formData.gender}
               onChange={handleChange}
+              required
             >
               <option value="">Select Gender</option>
               <option value="Male">Male</option>
@@ -151,6 +181,7 @@ const UserRegistration = () => {
               name="dateOfBirth"
               value={formData.dateOfBirth}
               onChange={handleChange}
+              required
             />
           </div>
 
@@ -162,6 +193,7 @@ const UserRegistration = () => {
               value={formData.city}
               onChange={handleChange}
               placeholder="Enter your city"
+              required
             />
           </div>
         </div>
@@ -175,6 +207,7 @@ const UserRegistration = () => {
               value={formData.state}
               onChange={handleChange}
               placeholder="Enter your state"
+              required
             />
           </div>
 
@@ -186,6 +219,7 @@ const UserRegistration = () => {
               value={formData.pincode}
               onChange={handleChange}
               placeholder="Enter your pincode"
+              required
             />
           </div>
         </div>
@@ -197,6 +231,7 @@ const UserRegistration = () => {
             value={formData.address}
             onChange={handleChange}
             placeholder="Enter your address"
+            required
           />
         </div>
 
