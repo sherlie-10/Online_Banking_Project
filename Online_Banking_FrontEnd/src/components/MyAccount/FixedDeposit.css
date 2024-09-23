@@ -1,0 +1,112 @@
+.fixed-deposit-container {
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .fixed-deposit-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  /* Button styles */
+.btn {
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+  
+  /* Primary button */
+  .btn-primary {
+    background-color: #007bff; /* Blue color */
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Success button */
+  .btn-success {
+    background-color: #28a745; /* Green color */
+    color: white;
+  }
+  
+  .btn-success:hover {
+    background-color: #218838; /* Darker green on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Info button */
+  .btn-info {
+    background-color: #17a2b8; /* Cyan color */
+    color: white;
+  }
+  
+  .btn-info:hover {
+    background-color: #138496; /* Darker cyan on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  
+  .fd-form {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .fd-policy {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .fd-policy h4 {
+    margin-bottom: 10px;
+  }
+  
+  .fd-policy ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .fd-policy li {
+    margin-bottom: 5px;
+  }
+  
+  .fd-list {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .fd-item {
+    padding: 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .fd-item:hover {
+    background-color: #f1f1f1; /* Add hover effect */
+  }
+  
+  .fd-details {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+  }
+  

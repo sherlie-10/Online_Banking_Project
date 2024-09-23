@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AccountDetails from './AccountDetails';
 import CreateAccountForm from './CreateAccountForm';
+import FixedDeposit from './FixedDeposit'; // Import FixedDeposit component
 import './MyAccount.css'; // Custom styles
 
 const MyAccount = () => {
@@ -48,7 +49,7 @@ const MyAccount = () => {
         {showCreateForm ? (
           <CreateAccountForm />
         ) : (
-          accountType && <AccountDetails accountType={accountType} />
+          accountType === 'FD' ? <FixedDeposit /> : <AccountDetails accountType={accountType} />
         )}
       </div>
     </div>

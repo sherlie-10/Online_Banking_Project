@@ -1,56 +1,78 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Button, Modal, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import jsPDF from 'jspdf';
+import './MyAccount'; // Import your CSS for styling
 
 const AccountDetails = ({ accountType }) => {
   const [accountData, setAccountData] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [transactionsPerPage] = useState(10);
+  const [showModal, setShowModal] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const token = useSelector((state) => state['Online Banking Appln'].result);
-  
+
   useEffect(() => {
     const fetchAccountData = async () => {
       try {
         const response = await axios.get('http://localhost:9090/api/user/my-accounts', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        console.log(response.data); // Log the entire response data
-
-        // Filter for the specific account type
         const account = response.data.find((acc) => acc.accountType === accountType);
-        console.log('Requested account type:', accountType); // Log requested account type
-        console.log('Filtered account:', account); // Log the filtered account
-
         if (account) {
           setAccountData(account);
-          // You might need to set transactions here if they come separately
-          // setTransactions(account.transactions || []); // Assuming transactions exist
+          await fetchTransactions(account.accountNumber);
         } else {
           setError('No account found for the specified type.');
         }
-        setLoading(false);
       } catch (error) {
         setError('Error fetching account details. Please try again later.');
+      } finally {
         setLoading(false);
       }
     };
 
+    const fetchTransactions = async (accountNumber) => {
+      try {
+        const response = await axios.get(`http://localhost:9090/api/user/transactions/userAccountTypeTransaction?accountType=${accountType}&page=${currentPage}&size=${transactionsPerPage}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setTransactions(response.data);
+      } catch (error) {
+        setError('Error fetching transactions. Please try again later.');
+      }
+    };
+
     fetchAccountData();
-  }, [accountType, token]);
+  }, [accountType, token, currentPage]);
 
-  if (loading) {
-    return <p>Loading account details...</p>;
-  }
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+    doc.text('Transaction Report', 20, 20);
 
-  if (error) {
-    return <p className="text-danger">{error}</p>;
-  }
+    transactions.forEach((transaction, index) => {
+      const y = 40 + (index * 10);
+      doc.text(`Transaction ${index + 1}:`, 20, y);
+      doc.text(`ID: ${transaction.id}`, 30, y + 5);
+      doc.text(`Amount: ${transaction.amount}`, 30, y + 10);
+      doc.text(`Date: ${new Date(transaction.transactionDate).toLocaleDateString()}`, 30, y + 15);
+      doc.text(`Type: ${transaction.transactionType}`, 30, y + 20);
+      doc.text(`Status: ${transaction.status}`, 30, y + 25);
+      doc.text(`Message: ${transaction.message}`, 30, y + 30);
+    });
+
+    doc.save('transaction_report.pdf');
+  };
+
+  if (loading) return <p>Loading account details...</p>;
+  if (error) return <p className="text-danger">{error}</p>;
 
   return (
     <div className="account-details">
@@ -59,7 +81,7 @@ const AccountDetails = ({ accountType }) => {
         <>
           <ul className="list-group mb-4">
             <li className="list-group-item"><strong>Account Number:</strong> {accountData.accountNumber}</li>
-            <li className="list-group-item"><strong>Balance:</strong> {accountData.balance}</li>
+            <li className="list-group-item"><strong>Balance:</strong> {accountData.balance} <i className="fa fa-rupee" style={{ fontSize: '15px', color: 'blue' }}></i></li>
             <li className="list-group-item"><strong>Status:</strong> {accountData.accountStatus}</li>
             <li className="list-group-item"><strong>Created Date:</strong> {new Date(accountData.createdDate).toLocaleDateString()}</li>
           </ul>
@@ -82,10 +104,19 @@ const AccountDetails = ({ accountType }) => {
               {transactions.length > 0 ? (
                 transactions.map((transaction) => (
                   <tr key={transaction.id}>
-                    <td>{transaction.date}</td>
-                    <td>{transaction.description}</td>
-                    <td>{transaction.amount < 0 ? `-$${Math.abs(transaction.amount)}` : `$${transaction.amount}`}</td>
-                    <td>{transaction.type}</td>
+                    <td>{new Date(transaction.transactionDate).toLocaleDateString()}</td>
+                    <td>{transaction.message}</td>
+                    <td style={{ color: transaction.transactionType === 'WITHDRAWAL' ? 'red' : 'green' }}>
+                      {transaction.transactionType === 'WITHDRAWAL' ? `-$${Math.abs(transaction.amount)}` : `$${transaction.amount}`}
+                    </td>
+                    <td>
+                      {transaction.transactionType === 'DEPOSIT' ? (
+                        <i className="fa fa-money-bill-alt" style={{ color: 'green' }}></i>
+                      ) : (
+                        <i className="fa fa-history" style={{ color: 'orange' }}></i>
+                      )}
+                      {transaction.transactionType}
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -95,6 +126,35 @@ const AccountDetails = ({ accountType }) => {
               )}
             </tbody>
           </table>
+
+          {/* Pagination Controls */}
+          <div className="d-flex justify-content-between">
+            <Button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>Previous</Button>
+            <Button onClick={() => setCurrentPage(currentPage + 1)}>Next</Button>
+          </div>
+
+          {/* Modal for downloading PDF */}
+          <Modal show={showModal} onHide={() => setShowModal(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Download PDF</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form>
+                <Form.Group controlId="formStartDate">
+                  <Form.Label>Start Date</Form.Label>
+                  <Form.Control type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                </Form.Group>
+                <Form.Group controlId="formEndDate">
+                  <Form.Label>End Date</Form.Label>
+                  <Form.Control type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                </Form.Group>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setShowModal(false)}>Close</Button>
+              <Button variant="primary" onClick={downloadPDF}>Download</Button>
+            </Modal.Footer>
+          </Modal>
         </>
       ) : (
         <p>No account details available.</p>
