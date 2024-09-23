@@ -1,31 +1,27 @@
 import React, { useState } from 'react';
 import './forgotPassword.css';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate(); // Hook to programmatically navigate
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Simulate success
-    if (email) {
-      setSuccessMessage('A password reset link has been sent to your email.');
-      setErrorMessage('');
-    } else {
-      setErrorMessage('Please enter your email address.');
-      setSuccessMessage('');
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();  // Prevent form submission
+    try {
+      const response = await axios.post('http://localhost:9090/api/forgot-password', { email });
+      setMessage('Password reset link has been sent to your email. You can now go to the reset page.');
+    } catch (error) {
+      setMessage('Error: Unable to send reset email. Please check the email and try again.');
     }
   };
 
   return (
     <div className="forgot-password-container">
-      <form className="forgot-password-form" onSubmit={handleSubmit}>
+      <form className="forgot-password-form" onSubmit={handleForgotPassword}>
         <h2>Forgot Password</h2>
-
-        {successMessage && <p className="success-message">{successMessage}</p>}
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
-
         <div className="input-group">
           <label>Email Address</label>
           <input
@@ -40,6 +36,14 @@ const ForgotPassword = () => {
         <button type="submit" className="btn-primary">
           Send Reset Link
         </button>
+
+        {message && (
+          <p>
+            {message} 
+            <br />
+            <a href="/reset-password">Go to Reset Password Page</a> {/* Link to Reset Password */}
+          </p>
+        )}
 
         <p className="back-to-login">
           <a href="/login">Back to Login</a>

@@ -1,0 +1,111 @@
+.my-account-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .account-nav {
+    margin-bottom: 20px;
+  }
+  
+  .account-options {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .account-options button {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .account-options button:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 6px 15px rgba(42, 85, 220, 0.3);
+  }
+  
+  .btn-primary {
+    background-color: #ff7e5f;
+    background-image: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    font-size: 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 6px 15px rgba(255, 126, 95, 0.3);
+  }
+  
+  /* Quote styling */
+  .quote-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .quote {
+    font-size: 18px;
+    font-style: italic;
+    font-weight: bold;
+    color: #333;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Main content area */
+  .main-content {
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  @media (max-width: 768px) {
+    .account-nav {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .account-options {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .account-options button {
+      width: 100%;
+      margin: 10px 0;
+    }
+  
+    .btn-primary {
+      width: 100%;
+      margin: 10px 0;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .my-account-container {
+      padding: 10px;
+    }
+  
+    .main-content {
+      padding: 15px;
+    }
+  }
+  

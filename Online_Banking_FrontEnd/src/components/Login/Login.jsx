@@ -29,8 +29,7 @@ const Login = () => {
         setErrorMessage('');
         // Store the token in localStorage or cookies
         localStorage.setItem('token', token);
-        // Navigate to the home page
-        navigate('/');
+        navigate('/UserView');
       })
       .catch((err) => {
         console.error('Login failed', err);
