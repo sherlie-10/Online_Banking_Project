@@ -1,21 +1,3 @@
-// import { createAsyncThunk } from "@reduxjs/toolkit";
-// import axios from "axios";
-
-// const apiCall = createAsyncThunk("OnlineBankAppln/login", async ({username, password})=>{
-    
-//     const response = await axios.post("http://localhost:9090/api/login",{username,password});
-//     console.log("Login API response: ", response); 
-//     const {data} = response;
-//     const {x} = data;
-//     const {token} = x;
-//     return token;
-
-    
-// });
-
-// export default apiCall;
-
-
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";

@@ -21,7 +21,7 @@ const NavBar = ()=>{
                                     <a href="#about" className="nav-link">About</a>
                                 </li>
                                 <li className="nav-item">
-                                    <a href="#" className="nav-link">Contact</a>
+                                    <a href="#contact" className="nav-link">Contact</a>
                                 </li>
                           </ul>
                           <Link to="/login" className="login-btn">Login</Link>

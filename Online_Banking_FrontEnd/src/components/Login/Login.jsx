@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom'; // Import useNavigate for navigation
@@ -13,6 +12,7 @@ const Login = () => {
   const [customerId, setCustomerId] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false); // State to toggle password visibility
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -56,12 +56,24 @@ const Login = () => {
 
         <div className="input-group">
           <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-          />
+          <div className="password-input">
+            <input
+              type={passwordVisible ? 'text' : 'password'} // Toggle input type based on state
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+            />
+            <span 
+              className="toggle-password" 
+              onClick={() => setPasswordVisible(!passwordVisible)} // Toggle password visibility
+              role="button" 
+              tabIndex={0} 
+              onKeyDown={(e) => e.key === 'Enter' && setPasswordVisible(!passwordVisible)} // Accessibility
+              aria-label={passwordVisible ? 'Hide password' : 'Show password'}
+            >
+              {passwordVisible ? '🙈' : '👁️'} {/* Eye icon to toggle visibility */}
+            </span>
+          </div>
         </div>
 
         <button type="submit" className="btn-primary" disabled={isLoading}>
@@ -69,7 +81,6 @@ const Login = () => {
         </button>
 
         <p className="forgot-password">
-          {/* <a href="">Forgot Password?</a> */}
           <Link to="/forgot-password">Forgot Password?</Link>
         </p>
 

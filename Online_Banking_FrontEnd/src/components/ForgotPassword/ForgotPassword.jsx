@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import './forgotPassword.css';
 import axios from 'axios';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import './forgotPassword.css';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -40,8 +40,7 @@ const ForgotPassword = () => {
         {message && (
           <p>
             {message} 
-            <br />
-            <a href="/reset-password">Go to Reset Password Page</a> {/* Link to Reset Password */}
+           
           </p>
         )}
 

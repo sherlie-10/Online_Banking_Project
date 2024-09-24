@@ -3,6 +3,7 @@ import { Button, Modal, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import './MyAccount'; // Import your CSS for styling
 
 const AccountDetails = ({ accountType }) => {
@@ -57,17 +58,34 @@ const AccountDetails = ({ accountType }) => {
     const doc = new jsPDF();
     doc.text('Transaction Report', 20, 20);
 
-    transactions.forEach((transaction, index) => {
-      const y = 40 + (index * 10);
-      doc.text(`Transaction ${index + 1}:`, 20, y);
-      doc.text(`ID: ${transaction.id}`, 30, y + 5);
-      doc.text(`Amount: ${transaction.amount}`, 30, y + 10);
-      doc.text(`Date: ${new Date(transaction.transactionDate).toLocaleDateString()}`, 30, y + 15);
-      doc.text(`Type: ${transaction.transactionType}`, 30, y + 20);
-      doc.text(`Status: ${transaction.status}`, 30, y + 25);
-      doc.text(`Message: ${transaction.message}`, 30, y + 30);
+    // Define the columns for the PDF table
+    const columns = [
+      { header: 'Transaction ID', dataKey: 'id' },
+      { header: 'Amount', dataKey: 'amount' },
+      { header: 'Date', dataKey: 'transactionDate' },
+      { header: 'Type', dataKey: 'transactionType' },
+      { header: 'Status', dataKey: 'status' },
+      { header: 'Message', dataKey: 'message' },
+    ];
+
+    // Prepare the data for the table
+    const data = transactions.map(transaction => ({
+      id: transaction.id,
+      amount: transaction.transactionType === 'WITHDRAWAL' ? `- $${Math.abs(transaction.amount)}` : `$${transaction.amount}`,
+      transactionDate: new Date(transaction.transactionDate).toLocaleDateString(),
+      transactionType: transaction.transactionType,
+      status: transaction.status,
+      message: transaction.message,
+    }));
+
+    // Create the table in the PDF
+    doc.autoTable({
+      head: [columns],
+      body: data,
+      startY: 30,
     });
 
+    // Save the PDF
     doc.save('transaction_report.pdf');
   };
 

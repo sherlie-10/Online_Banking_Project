@@ -3,9 +3,10 @@ import './userRegistration.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-
-
+import {
+  faEye, faEyeSlash, faUser, faLock, faEnvelope, faPhone,
+  faIdCard, faCalendar, faCity, faMapPin, faHome, faMale, faFemale
+} from '@fortawesome/free-solid-svg-icons';
 
 const UserRegistration = () => {
   const [formData, setFormData] = useState({
@@ -25,7 +26,19 @@ const UserRegistration = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate(); 
+  const [errors, setErrors] = useState({});
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const navigate = useNavigate();
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.email.includes('@')) newErrors.email = 'Invalid email format';
+    if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
+    if (!/^\d{10}$/.test(formData.mobileNumber)) newErrors.mobileNumber = 'Mobile number must be 10 digits';
+    // if (!/^\d{12}$/.test(formData.aadharNumber)) newErrors.aadharNumber = 'Aadhar must be 12 digits';
+    // if (!/^[A-Z]{5}\d{4}[A-Z]{1}$/.test(formData.panNumber)) newErrors.panNumber = 'Invalid PAN format';
+    return newErrors;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,16 +47,19 @@ const UserRegistration = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
     try {
       const response = await axios.post('http://localhost:9090/api/register', formData);
-
-      // Assuming backend returns a success message or user ID
       console.log('Response:', response.data);
-      alert('Registration successful! Your customer ID has been sent to your email.');
-
-      // Redirect to login after successful registration
-      navigate('/login');
+      setShowSuccessModal(true);
+      setTimeout(() => {
+        setShowSuccessModal(false);
+        navigate('/login');
+      }, 3000);
     } catch (error) {
       console.error('There was an error during registration:', error.response || error.message);
       alert('Registration failed. Please check the information and try again.');
@@ -51,17 +67,28 @@ const UserRegistration = () => {
   };
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword); // Toggle password visibility
+    setShowPassword(!showPassword);
+  };
+
+  const closeSuccessModal = () => {
+    setShowSuccessModal(false);
+    navigate('/login'); // Navigate after closing the modal if desired
   };
 
   return (
     <div className="registration-container">
+      {showSuccessModal && (
+        <div className="success-modal">
+          <p>Registration successful! Your customer ID has been sent to your email.</p>
+          <button onClick={closeSuccessModal}>Close</button>
+        </div>
+      )}
       <form className="registration-form" onSubmit={handleSubmit}>
         <center><h2 style={{ fontWeight: 'bold' }}>Register</h2></center>
 
         <div className="input-group side-by-side">
           <div className="input-group half-width">
-            <label>First Name</label>
+            <label><FontAwesomeIcon icon={faUser} /> First Name</label>
             <input
               type="text"
               name="firstName"
@@ -73,7 +100,7 @@ const UserRegistration = () => {
           </div>
 
           <div className="input-group half-width">
-            <label>Last Name</label>
+            <label><FontAwesomeIcon icon={faUser} /> Last Name</label>
             <input
               type="text"
               name="lastName"
@@ -86,7 +113,7 @@ const UserRegistration = () => {
         </div>
 
         <div className="input-group">
-          <label>Password</label>
+          <label><FontAwesomeIcon icon={faLock} /> Password</label>
           <div className="password-container">
             <input
               type={showPassword ? 'text' : 'password'}
@@ -104,10 +131,11 @@ const UserRegistration = () => {
               <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
             </button>
           </div>
+          {errors.password && <p className="error">{errors.password}</p>}
         </div>
 
         <div className="input-group">
-          <label>Email Address</label>
+          <label><FontAwesomeIcon icon={faEnvelope} /> Email Address</label>
           <input
             type="email"
             name="email"
@@ -116,11 +144,12 @@ const UserRegistration = () => {
             placeholder="Enter your email address"
             required
           />
+          {errors.email && <p className="error">{errors.email}</p>}
         </div>
 
         <div className="input-group side-by-side">
           <div className="input-group half-width">
-            <label>Mobile Number</label>
+            <label><FontAwesomeIcon icon={faPhone} /> Mobile Number</label>
             <input
               type="text"
               name="mobileNumber"
@@ -129,10 +158,11 @@ const UserRegistration = () => {
               placeholder="Enter your mobile number"
               required
             />
+            {errors.mobileNumber && <p className="error">{errors.mobileNumber}</p>}
           </div>
 
           <div className="input-group half-width">
-            <label>Aadhar Number</label>
+            <label><FontAwesomeIcon icon={faIdCard} /> Aadhar Number</label>
             <input
               type="text"
               name="aadharNumber"
@@ -141,12 +171,13 @@ const UserRegistration = () => {
               placeholder="Enter your Aadhar number"
               required
             />
+            {errors.aadharNumber && <p className="error">{errors.aadharNumber}</p>}
           </div>
         </div>
 
         <div className="input-group side-by-side">
           <div className="input-group half-width">
-            <label>PAN Number</label>
+            <label><FontAwesomeIcon icon={faIdCard} /> PAN Number</label>
             <input
               type="text"
               name="panNumber"
@@ -155,10 +186,11 @@ const UserRegistration = () => {
               placeholder="Enter your PAN number"
               required
             />
+            {errors.panNumber && <p className="error">{errors.panNumber}</p>}
           </div>
 
           <div className="input-group half-width">
-            <label>Gender</label>
+            <label><FontAwesomeIcon icon={faMale} /> Gender</label>
             <select
               name="gender"
               value={formData.gender}
@@ -175,7 +207,7 @@ const UserRegistration = () => {
 
         <div className="input-group side-by-side">
           <div className="input-group half-width">
-            <label>Date of Birth</label>
+            <label><FontAwesomeIcon icon={faCalendar} /> Date of Birth</label>
             <input
               type="date"
               name="dateOfBirth"
@@ -186,7 +218,7 @@ const UserRegistration = () => {
           </div>
 
           <div className="input-group half-width">
-            <label>City</label>
+            <label><FontAwesomeIcon icon={faCity} /> City</label>
             <input
               type="text"
               name="city"
@@ -200,7 +232,7 @@ const UserRegistration = () => {
 
         <div className="input-group side-by-side">
           <div className="input-group half-width">
-            <label>State</label>
+            <label><FontAwesomeIcon icon={faMapPin} /> State</label>
             <input
               type="text"
               name="state"
@@ -212,7 +244,7 @@ const UserRegistration = () => {
           </div>
 
           <div className="input-group half-width">
-            <label>Pincode</label>
+            <label><FontAwesomeIcon icon={faMapPin} /> Pincode</label>
             <input
               type="text"
               name="pincode"
@@ -225,7 +257,7 @@ const UserRegistration = () => {
         </div>
 
         <div className="input-group">
-          <label>Address</label>
+          <label><FontAwesomeIcon icon={faHome} /> Address</label>
           <textarea
             name="address"
             value={formData.address}
@@ -235,9 +267,7 @@ const UserRegistration = () => {
           />
         </div>
 
-        <button type="submit" className="btn-primary">
-          Register
-        </button>
+        <button type='submit' className="button-21" role="button">Register</button>
       </form>
     </div>
   );

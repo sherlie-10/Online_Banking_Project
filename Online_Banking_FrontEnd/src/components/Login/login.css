@@ -71,3 +71,20 @@
     font-size: 0.9rem;
   }
   
+  .password-input {
+    display: flex;
+    align-items: center;
+  }
+  
+  .password-input input {
+    flex: 1; /* Take full width */
+    padding: 10px;
+    margin-right: 10px; /* Space between input and icon */
+  }
+  
+  .toggle-password {
+    cursor: pointer;
+    font-size: 18px; /* Adjust size as needed */
+    user-select: none; /* Prevent text selection */
+  }
+  
